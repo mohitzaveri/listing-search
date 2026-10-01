@@ -35,7 +35,20 @@ async def handle_bad_query_type(_: Request, exc: RequestValidationError) -> JSON
     return error_response(field, f"{field}: {first['msg']}.")
 
 
-@app.get("/api/listings/search")
+SEARCH_PARAMS = ("minPrice", "maxPrice", "minBedrooms", "city", "keyword", "targetBudget", "page", "pageSize")
+
+
+def reject_unknown_params(request: Request) -> None:
+    """A misspelled filter (e.g. "minprice") would otherwise be silently ignored
+    and return unfiltered results, so refuse it and suggest the right name."""
+    for name in request.query_params:
+        if name not in SEARCH_PARAMS:
+            match = next((param for param in SEARCH_PARAMS if param.lower() == name.lower()), None)
+            hint = f"Did you mean '{match}'?" if match else f"Allowed: {', '.join(SEARCH_PARAMS)}."
+            raise InvalidSearchError(name, f"Unknown parameter '{name}'. {hint}")
+
+
+@app.get("/api/listings/search", dependencies=[Depends(reject_unknown_params)])
 def search_listings(
     min_price: float | None = Query(None, alias="minPrice"),
     max_price: float | None = Query(None, alias="maxPrice"),

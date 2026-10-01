@@ -38,6 +38,22 @@ def test_no_matches_is_200_with_empty_results(client):
     assert response.json()["totalResults"] == 0
 
 
+def test_misspelled_parameter_is_rejected_with_a_hint(client):
+    response = client.get(URL, params={"minprice": 900000})
+    assert response.status_code == 400
+    assert response.json()["error"] == {
+        "field": "minprice",
+        "message": "Unknown parameter 'minprice'. Did you mean 'minPrice'?",
+    }
+
+
+def test_unknown_parameter_lists_the_allowed_ones(client):
+    response = client.get(URL, params={"bedrooms": 3})
+    assert response.status_code == 400
+    assert response.json()["error"]["field"] == "bedrooms"
+    assert "Allowed: minPrice, maxPrice, minBedrooms" in response.json()["error"]["message"]
+
+
 @pytest.mark.parametrize(
     "params, field",
     [

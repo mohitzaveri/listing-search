@@ -7,15 +7,31 @@ A small full-stack search over property listings from several MLS feeds.
 
 ## Run it
 
-You need [uv](https://docs.astral.sh/uv/) and Node 22+.
+You need Python 3.12+ and Node 22+.
+
+**Terminal 1: API** on http://localhost:8000 (interactive docs at `/docs`). Use either option.
+
+With plain `pip`:
 
 ```bash
-# Terminal 1: API on http://localhost:8000 (interactive docs at /docs)
+cd backend
+python3 -m venv .venv
+source .venv/bin/activate        # Windows: .venv\Scripts\activate
+pip install -r requirements.txt
+uvicorn app.main:app --port 8000
+```
+
+Or with [uv](https://docs.astral.sh/uv/):
+
+```bash
 cd backend
 uv sync
 uv run uvicorn app.main:app --port 8000
+```
 
-# Terminal 2: UI on http://localhost:5173 (proxies /api to the backend)
+**Terminal 2: UI** on http://localhost:5173 (proxies `/api` to the backend):
+
+```bash
 cd frontend
 npm install
 npm run dev
@@ -23,12 +39,9 @@ npm run dev
 
 To try the production build instead of the dev server: `npm run build && npm run preview` (UI on http://localhost:4173).
 
-Tests:
+**Tests** (from `backend/`): `pytest` with the pip setup, or `uv run pytest` with uv.
 
-```bash
-cd backend
-uv run pytest
-```
+`requirements.txt` has the same pinned versions as `uv.lock`. It was generated with `uv export --format requirements-txt --no-hashes --no-emit-project -o requirements.txt`.
 
 ## API
 
@@ -93,6 +106,7 @@ Why this formula: it's simple, every part is easy to explain, and the two knobs 
 | `page < 1`, or `page` past the last page                | 400, says how many pages exist                               |
 | `pageSize < 1` or `> 50`                                | 400                                                          |
 | Text in a number field (`minPrice=abc`)                 | 400 (same error shape)                                       |
+| Unknown or misspelled parameter (`minprice`)            | 400, suggests the right name ("Did you mean 'minPrice'?")    |
 | City not in the data (`Bostn`)                          | 400, lists the known cities: most likely a typo              |
 | Known city, but the other filters remove everything     | 200 with empty `results`: a real "no matches"                |
 | Blank `city` / `keyword`                                | Ignored ("any")                                              |
