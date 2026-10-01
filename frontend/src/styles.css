@@ -1,0 +1,369 @@
+/* Plain CSS, system fonts: nothing extra to download. */
+
+:root {
+  color-scheme: light dark;
+  --bg: #f6f7f9;
+  --surface: #ffffff;
+  --text: #1a1d21;
+  --muted: #5f6670;
+  --border: #e3e6ea;
+  --accent: #2557d6;
+  --accent-text: #ffffff;
+  --danger: #b42318;
+  --danger-bg: #fef3f2;
+  --ok: #067647;
+  --ok-bg: #ecfdf3;
+  --warn: #b54708;
+  --warn-bg: #fffaeb;
+  --subtle: #eceef1;
+  --radius: 10px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0f1115;
+    --surface: #171a20;
+    --text: #e6e8eb;
+    --muted: #9aa1ab;
+    --border: #2a2f37;
+    --accent: #7097ff;
+    --accent-text: #0f1115;
+    --danger: #ff8a80;
+    --danger-bg: #2a1614;
+    --ok: #6ce9a6;
+    --ok-bg: #0f2a1d;
+    --warn: #fdb022;
+    --warn-bg: #2b2111;
+    --subtle: #22262d;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 15px/1.5 system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+}
+
+.app {
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 32px 16px 48px;
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 26px;
+  letter-spacing: -0.01em;
+}
+
+.header p {
+  margin: 4px 0 20px;
+}
+
+.muted {
+  color: var(--muted);
+}
+
+.small {
+  font-size: 13px;
+}
+
+.nowrap {
+  white-space: nowrap;
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+/* ---------- filters ---------- */
+
+.filters {
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.fields {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+@media (max-width: 760px) {
+  .fields {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--muted);
+}
+
+input,
+select {
+  font: inherit;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 10px;
+}
+
+.field input {
+  font-size: 15px;
+  font-weight: 400;
+}
+
+input:focus-visible,
+select:focus-visible,
+.button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+input[aria-invalid='true'] {
+  border-color: var(--danger);
+  box-shadow: 0 0 0 1px var(--danger);
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.button {
+  font: inherit;
+  font-weight: 500;
+  padding: 8px 16px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+}
+
+.button.primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-text);
+}
+
+.button:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.alert {
+  margin: 0;
+  padding: 10px 14px;
+  border: 1px solid currentColor;
+  border-radius: var(--radius);
+  background: var(--danger-bg);
+  color: var(--danger);
+}
+
+/* ---------- results ---------- */
+
+.results {
+  overflow: hidden;
+}
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.toolbar p {
+  margin: 0;
+  font-size: 14px;
+}
+
+.page-size {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.page-size select {
+  padding: 4px 8px;
+}
+
+.table-wrap {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  transition: opacity 0.15s;
+}
+
+/* Dim only if loading takes a moment, so instant (cached) pages never flicker. */
+.results[aria-busy='true'] table {
+  opacity: 0.5;
+  transition-delay: 0.15s;
+}
+
+th {
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  text-align: left;
+  white-space: nowrap;
+  color: var(--muted);
+}
+
+td {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+}
+
+tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.num {
+  text-align: right;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.address {
+  font-weight: 500;
+}
+
+.price {
+  font-weight: 600;
+}
+
+.badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: capitalize;
+  background: var(--subtle);
+  color: var(--muted);
+}
+
+.badge.active {
+  background: var(--ok-bg);
+  color: var(--ok);
+}
+
+.badge.pending {
+  background: var(--warn-bg);
+  color: var(--warn);
+}
+
+.score {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.meter {
+  width: 48px;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--subtle);
+  overflow: hidden;
+}
+
+.meter span {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-top: 1px solid var(--border);
+  font-size: 14px;
+}
+
+.empty {
+  padding: 40px 16px;
+  text-align: center;
+}
+
+.empty p {
+  margin: 4px 0;
+}
+
+.skeleton-row {
+  height: 20px;
+  margin: 18px 16px;
+  border-radius: 6px;
+  background: var(--subtle);
+  animation: pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton-row {
+    animation: none;
+  }
+
+  table {
+    transition: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .app {
+    padding-top: 20px;
+  }
+
+  .hide-sm {
+    display: none;
+  }
+
+  th,
+  td {
+    padding-left: 6px;
+    padding-right: 6px;
+  }
+
+  .table-wrap {
+    padding: 0 2px;
+  }
+
+  .meter {
+    display: none;
+  }
+}
